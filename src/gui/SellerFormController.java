@@ -76,6 +76,9 @@ public class SellerFormController implements Initializable {
 
 	@FXML
 	private Label labelErrorBaseSalary;
+	
+	@FXML
+	private Label labelErrorDepartment;
 
 	@FXML
 	private Button btSave;
@@ -132,13 +135,17 @@ public class SellerFormController implements Initializable {
 
 		if (txtName.getText() == null || txtName.getText().trim().equals("")) {
 			exception.addError("name", "Fild can't be empty");
+		} else {
+			obj.setName(txtName.getText());
 		}
-		obj.setName(txtName.getText());
-
+		
 		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
 			exception.addError("email", "Fild can't be empty");
+		} else if (!Utils.isValidEmail(txtEmail.getText())) {
+			exception.addError("email", "Invalid email");
+		} else {
+			obj.setEmail(txtEmail.getText());
 		}
-		obj.setEmail(txtEmail.getText());
 
 		if (dpBirthDate.getValue() == null) {
 			exception.addError("birthDate", "Fild can't be empty");
@@ -149,10 +156,17 @@ public class SellerFormController implements Initializable {
 
 		if (txtBaseSalary.getText() == null || txtBaseSalary.getText().trim().equals("")) {
 			exception.addError("baseSalary", "Fild can't be empty");
+		} else {
+			obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText()));
 		}
-		obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText()));
 		
-		obj.setDepartment(comboBoxDepartment.getValue());
+		if (comboBoxDepartment.getValue() == null) {
+			exception.addError("department", "Fild can't be empty");
+		} else {
+			obj.setDepartment(comboBoxDepartment.getValue());
+		}
+		
+		
 
 		if (exception.getErrors().size() > 0)
 			throw exception;
@@ -214,6 +228,7 @@ public class SellerFormController implements Initializable {
 		labelErrorEmail.setText((fields.contains("email") ? errors.get("email") : ""));
 		labelErrorBirthDate.setText((fields.contains("birthDate") ? errors.get("birthDate") : ""));
 		labelErrorBaseSalary.setText((fields.contains("baseSalary") ? errors.get("baseSalary") : ""));
+		labelErrorDepartment.setText((fields.contains("department") ? errors.get("department") : ""));
 	}
 
 	private void initializeComboBoxDepartment() {
